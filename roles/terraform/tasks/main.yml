@@ -1,0 +1,22 @@
+- name: Garante que o Terraform iniciou
+  command: terraform init
+  args:
+    chdir: ./terraform/files
+
+- name: Realiza plan do deploy da Infra
+  command: terraform plan -out=tfplan
+  args:
+    chdir: ./terraform/files
+  when: action == 'deploy'
+
+- name: Realiza plan do destroy da Infra
+  command: terraform plan -destroy -out=tfplan
+  args:
+    chdir: ./terraform/files
+  when: action == 'destroy'
+
+- name: Aplica deploy ou destroy conforme plan
+  command: terraform apply tfplan
+  args:
+    chdir: ./terraform/files
+  when: action in ['deploy', 'destroy']

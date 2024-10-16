@@ -1,0 +1,18 @@
+---
+- name: Criacao de Recursos na AWS
+  hosts: local
+  gather_facts: no
+  vars_prompt:
+    - name: action
+      prompt: "Qual acao deseja realizar? (deploy/destroy)"
+      private: false
+
+  roles:
+    - terraform
+
+- name: Configura instancia EC2 para execucao do Producer Kafka 
+  hosts: kafka_client
+  become: yes
+  roles:
+    - kafka-producer
+  when: action == 'deploy'

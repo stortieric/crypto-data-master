@@ -1,0 +1,68 @@
+- name: Download do Kafka
+  ansible.builtin.get_url:
+    url: "https://archive.apache.org/dist/kafka/{{ versao_kafka }}/kafka_2.13-{{ versao_kafka }}.tgz"
+    dest: /home/ec2-user/
+    mode: '0755'
+    force: yes
+
+- name: Realiza Extracao do Kafka
+  ansible.builtin.unarchive:
+    src: "/home/ec2-user/kafka_2.13-{{ versao_kafka }}.tgz"
+    dest: /home/ec2-user/
+    remote_src: yes
+
+- name: Download do AWS MSK IAM Authenticator
+  ansible.builtin.get_url:
+    url: "https://github.com/aws/aws-msk-iam-auth/releases/download/v2.2.0/aws-msk-iam-auth-2.2.0-all.jar"
+    dest: "/home/ec2-user/kafka_2.13-{{ versao_kafka }}/libs/"
+
+- name: Criacao do arquivo de configuracao do client Kafka
+  ansible.builtin.copy:
+    dest: "/home/ec2-user/kafka_2.13-{{ versao_kafka }}/config/client.properties"
+    content: |
+      security.protocol=SASL_SSL
+      sasl.mechanism=AWS_MSK_IAM
+      sasl.jaas.config=software.amazon.msk.auth.iam.IAMLoginModule required;
+      sasl.client.callback.handler.class=software.amazon.msk.auth.iam.IAMClientCallbackHandler
+
+- name: Verifica se o topico Kafka existe
+  ansible.builtin.shell: |
+    /home/ec2-user/kafka_2.13-{{ versao_kafka }}/bin/kafka-topics.sh \
+      --describe \
+      --bootstrap-server {{ kafka_bootstrap_server }} \
+      --topic {{ topico_kafka }} \
+      --command-config /home/ec2-user/kafka_2.13-{{ versao_kafka }}/config/client.properties
+  register: check_topico
+  ignore_errors: true
+  failed_when: false
+
+- name: Criacao do topico Kafka
+  ansible.builtin.shell: |
+    /home/ec2-user/kafka_2.13-{{ versao_kafka }}/bin/kafka-topics.sh \
+      --create \
+      --bootstrap-server {{ kafka_bootstrap_server }} \
+      --replication-factor 3 \
+      --partitions 1 \
+      --topic {{ topico_kafka }} \
+      --command-config /home/ec2-user/kafka_2.13-{{ versao_kafka }}/config/client.properties
+  when: check_topico.rc != 0
+  args:
+    creates: "/var/log/ansible_kafka_topic_created.log"
+
+- name: Copia jar do producer Kafka do local para instancia EC2
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/programs/producer-producer-crypto.jar"
+    dest: /home/ec2-user/producer-producer-crypto.jar
+
+- name: Executa producer Kafka
+  ansible.builtin.shell: |
+    "nohup java -jar /home/ec2-user/producer-producer-crypto.jar {{alpaca_api_key}} {{alpaca_secret_key}} {{kafka_bootstrap_server}} &"
+  args:
+    chdir: "/home/ec2-user" 
+  async: 0  
+  poll: 0  
+
+- name: Exibir mensagem de finalizacao
+  ansible.builtin.debug:
+    msg: "O Kafka Producer JAR está executando em segundo plano, e o playbook terminou."
+

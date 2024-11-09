@@ -2,6 +2,10 @@ variable "vpc_emr" {
   type = string
 }
 
+variable "rota_publica_emr" {
+  type = string
+}
+
 variable "ins_prof_arn_emr" {
   type = string
 }
@@ -20,13 +24,18 @@ variable "sg_kms_id_emr" {
 
 resource "aws_subnet" "subnet_emr" {
   vpc_id = var.vpc_emr
-  cidr_block = "10.5.0.0/16"
+  cidr_block = "10.0.5.0/24"
   availability_zone = "us-east-1a"
   map_public_ip_on_launch = true
 }
 
-resource "aws_security_group" "sg_emr" {
-  name = "sg-emr-lake"
+resource "aws_route_table_association" "public_assoc_emr" {
+  subnet_id = aws_subnet.subnet_emr.id
+  route_table_id = var.rota_publica_emr
+}
+
+resource "aws_security_group" "emr_seg_grp" {
+  name = "emr-lake-seg-grp"
   vpc_id = var.vpc_emr
   ingress {
     from_port = 22           
@@ -56,30 +65,25 @@ resource "aws_emr_cluster" "emr_cluster" {
   name = "crypto-lake-emr"
   release_label = "emr-7.3.0"
   applications = ["Spark", "Hive", "JupyterEnterpriseGateway", "AmazonCloudWatchAgent", "Livy", "Hadoop"]
-
   ec2_attributes {
     subnet_id = aws_subnet.subnet_emr.id
-    emr_managed_master_security_group = aws_security_group.sg_emr.id
-    emr_managed_slave_security_group  = aws_security_group.sg_emr.id
+    emr_managed_master_security_group = aws_security_group.emr_seg_grp.id
+    emr_managed_slave_security_group  = aws_security_group.emr_seg_grp.id
     instance_profile = var.ins_prof_arn_emr
     key_name = aws_key_pair.key_pair_emr.key_name
   }
-
   master_instance_group {
     instance_type = "m5.xlarge"
   }
-
   core_instance_group {
     instance_type  = "m5.xlarge"
     instance_count = 2
-
     ebs_config {
       size = "100"
       type = "gp2"
       volumes_per_instance = 1
     }
   }
-
   configurations_json = <<EOF
   [
     {
@@ -96,7 +100,6 @@ resource "aws_emr_cluster" "emr_cluster" {
     }
   ]
 EOF
-
   service_role = var.servico_role_emr
   log_uri = "s3://emr-logs-lake/"
   tags = {
@@ -111,9 +114,9 @@ resource "aws_security_group_rule" "permite_emr_para_msk" {
   to_port = 65535            
   protocol = "tcp"        
   security_group_id = var.sg_kms_id_emr   
-  source_security_group_id = aws_security_group.sg_emr.id
+  source_security_group_id = aws_security_group.emr_seg_grp.id
   depends_on = [
-    aws_security_group.sg_emr,  
+    aws_security_group.emr_seg_grp,  
     var.sg_kms_id_emr 
   ]
 }
@@ -127,5 +130,5 @@ resource "null_resource" "armazena_private_key_emr" {
   provisioner "local-exec" {
     command = "echo '${tls_private_key.tls_key_emr.private_key_pem}' > ~/.ssh/emr-key.pem && chmod 600 ~/.ssh/emr-key.pem"
   }
-  depends_on = [aws_key_pair.emr_key_pair]
+  depends_on = [aws_key_pair.key_pair_emr]
 }

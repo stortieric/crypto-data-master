@@ -4,7 +4,7 @@ resource "aws_iam_group" "engenheiro_lake" {
 }
 
 resource "aws_iam_group_policy" "engenheiro_policy" {
-  name  = "engineer-policy"
+  name  = "engenheiro-policy"
   group = aws_iam_group.engenheiro_lake.name
   policy = jsonencode({
     "Version": "2012-10-17",

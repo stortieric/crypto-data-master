@@ -2,6 +2,10 @@ variable "vpc_ec2" {
   type = string
 }
 
+variable "rota_publica_ec2" {
+  type = string
+}
+
 variable "iam_inst_prof_msk_ec2" {
   type = string
 }
@@ -14,28 +18,20 @@ variable "sg_kms_id_ec2" {
   type = string
 }
 
+variable "dir_raiz_ec2" {
+  type = string
+}
+
 resource "aws_subnet" "subnet_ec2_msk" {
   vpc_id = var.vpc_ec2
-  cidr_block = "10.4.0.0/16"
+  cidr_block = "10.0.4.0/24"
   availability_zone = "us-east-1a"
   map_public_ip_on_launch = true
 }
 
-resource "aws_internet_gateway" "igw_ec2" {
-  vpc_id = var.vpc_ec2
-}
-
-resource "aws_route_table" "rota_publica_ec2" {
-  vpc_id = var.vpc_ec2
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw_ec2.id
-  }
-}
-
-resource "aws_route_table_association" "public" {
+resource "aws_route_table_association" "public_assoc_ec2" {
   subnet_id = aws_subnet.subnet_ec2_msk.id
-  route_table_id = aws_route_table.rota_publica_ec2.id
+  route_table_id = var.rota_publica_ec2
 }
 
 resource "tls_private_key" "tls_key_ec2" {
@@ -48,8 +44,8 @@ resource "aws_key_pair" "key_pair_ec2" {
   public_key = tls_private_key.tls_key_ec2.public_key_openssh
 }
 
-resource "aws_security_group" "sg_ec2_kms" {
-  name = "sg-ec2-kms-lake"
+resource "aws_security_group" "ec2_kms_seg_grp" {
+  name = "ec2-kms-lake-seg-grp"
   vpc_id = var.vpc_ec2
   ingress {
     from_port = 22
@@ -71,7 +67,7 @@ resource "aws_instance" "ec2_msk_client" {
   key_name = aws_key_pair.key_pair_ec2.key_name
   subnet_id = aws_subnet.subnet_ec2_msk.id
   iam_instance_profile = var.iam_inst_prof_msk_ec2
-  vpc_security_group_ids = [aws_security_group.sg_ec2_kms.id]
+  vpc_security_group_ids = [aws_security_group.ec2_kms_seg_grp.id]
   associate_public_ip_address = true
   tags = {
     Name = "crypto-lake"
@@ -90,9 +86,9 @@ resource "aws_security_group_rule" "permite_ec2_para_msk" {
   to_port = 65535            
   protocol = "tcp"        
   security_group_id = var.sg_kms_id_ec2   
-  source_security_group_id = aws_security_group.sg_ec2_kms.id
+  source_security_group_id = aws_security_group.ec2_kms_seg_grp.id
   depends_on = [
-      aws_security_group.sg_ec2_kms,  
+      aws_security_group.ec2_kms_seg_grp,  
       var.sg_kms_id_ec2 
   ]
 }
@@ -116,10 +112,10 @@ output "instance_public_ip" {
 resource "null_resource" "atualiza_ip_ec2_msk" {
   provisioner "local-exec" {
     command = <<EOT
-      INVENTORY_FILE=../../../../../inventory.ini
+      INVENTORY_FILE="${var.dir_raiz_ec2}/inventory.ini"
 
       # Atualiza o ip do ec2 client com o output do Terraform
-      sed -i '5s|.*|${instance_public_ip}|' $INVENTORY_FILE
+      sed -i '5s|.*|${aws_instance.ec2_msk_client.public_ip}|' $INVENTORY_FILE
     EOT
   }
   depends_on = [aws_instance.ec2_msk_client] 

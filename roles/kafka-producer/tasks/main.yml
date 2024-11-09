@@ -55,14 +55,8 @@
     dest: /home/ec2-user/producer-producer-crypto.jar
 
 - name: Executa producer Kafka
-  ansible.builtin.shell: |
-    "nohup java -jar /home/ec2-user/producer-producer-crypto.jar {{alpaca_api_key}} {{alpaca_secret_key}} {{kafka_bootstrap_server}} &"
-  args:
-    chdir: "/home/ec2-user" 
-  async: 0  
-  poll: 0  
-
-- name: Exibir mensagem de finalizacao
-  ansible.builtin.debug:
-    msg: "O Kafka Producer JAR está executando em segundo plano, e o playbook terminou."
+  ansible.builtin.command: >    
+    nohup java -jar /home/ec2-user/producer-producer-crypto.jar {{alpaca_api_key}} {{alpaca_secret_key}} {{kafka_bootstrap_server}}
+  async: 10 
+  poll: 0
 

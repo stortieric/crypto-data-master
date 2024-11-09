@@ -1,22 +1,22 @@
 - name: Garante que o Terraform iniciou
   command: terraform init
   args:
-    chdir: ./terraform/files
+    chdir: "{{ playbook_dir }}/roles/terraform/files"
 
 - name: Realiza plan do deploy da Infra
-  command: terraform plan -out=tfplan
+  command: terraform plan -var "dir_raiz_projeto={{ playbook_dir }}" -out=tfplan
   args:
-    chdir: ./terraform/files
-  when: action == 'deploy'
+    chdir: "{{ playbook_dir }}/roles/terraform/files"
+  when: acao == 'deploy'
 
 - name: Realiza plan do destroy da Infra
-  command: terraform plan -destroy -out=tfplan
+  command: terraform plan -destroy -var "dir_raiz_projeto={{ playbook_dir }}" -out=tfplan
   args:
-    chdir: ./terraform/files
-  when: action == 'destroy'
+    chdir: "{{ playbook_dir }}/roles/terraform/files"
+  when: acao == 'destroy'
 
 - name: Aplica deploy ou destroy conforme plan
   command: terraform apply tfplan
   args:
-    chdir: ./terraform/files
-  when: action in ['deploy', 'destroy']
+    chdir: "{{ playbook_dir }}/roles/terraform/files"
+  when: acao in ['deploy', 'destroy']

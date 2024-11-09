@@ -1,0 +1,9 @@
+# Ignora arquivos temporarios do Terraform
+roles/terraform/files/.terraform
+roles/terraform/files/.terraform.lock.hcl
+roles/terraform/files/terraform.tfstate
+roles/terraform/files/terraform.tfstate.backup
+roles/terraform/files/.terraform.tfstate.lock.info
+roles/terraform/files/tfplan
+# Ignora virtual env Python
+env-dm

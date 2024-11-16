@@ -25,38 +25,92 @@
       sasl.jaas.config=software.amazon.msk.auth.iam.IAMLoginModule required;
       sasl.client.callback.handler.class=software.amazon.msk.auth.iam.IAMClientCallbackHandler
 
-- name: Verifica se o topico Kafka existe
+- name: Verifica se o topico coinbase-currencies Kafka existe
   ansible.builtin.shell: |
     /home/ec2-user/kafka_2.13-{{ versao_kafka }}/bin/kafka-topics.sh \
       --describe \
       --bootstrap-server {{ kafka_bootstrap_server }} \
-      --topic {{ topico_kafka }} \
+      --topic {{ topico_kafka_coins }} \
       --command-config /home/ec2-user/kafka_2.13-{{ versao_kafka }}/config/client.properties
-  register: check_topico
+  register: check_topico_coins
   ignore_errors: true
   failed_when: false
 
-- name: Criacao do topico Kafka
+- name: Criacao do topico Kafka coinbase-currencies
   ansible.builtin.shell: |
     /home/ec2-user/kafka_2.13-{{ versao_kafka }}/bin/kafka-topics.sh \
       --create \
       --bootstrap-server {{ kafka_bootstrap_server }} \
       --replication-factor 3 \
       --partitions 1 \
-      --topic {{ topico_kafka }} \
+      --topic {{ topico_kafka_coins }} \
       --command-config /home/ec2-user/kafka_2.13-{{ versao_kafka }}/config/client.properties
-  when: check_topico.rc != 0
+  when: check_topico_coins.rc != 0
   args:
-    creates: "/var/log/ansible_kafka_topic_created.log"
+    creates: "/var/log/ansible_kafka_topic_coins_created.log"
 
-- name: Copia jar do producer Kafka do local para instancia EC2
+- name: Verifica se o topico coinbase-trades Kafka existe
+  ansible.builtin.shell: |
+    /home/ec2-user/kafka_2.13-{{ versao_kafka }}/bin/kafka-topics.sh \
+      --describe \
+      --bootstrap-server {{ kafka_bootstrap_server }} \
+      --topic {{ topico_kafka_trader }} \
+      --command-config /home/ec2-user/kafka_2.13-{{ versao_kafka }}/config/client.properties
+  register: check_topico_trader
+  ignore_errors: true
+  failed_when: false
+
+- name: Criacao do topico Kafka coinbase-trades
+  ansible.builtin.shell: |
+    /home/ec2-user/kafka_2.13-{{ versao_kafka }}/bin/kafka-topics.sh \
+      --create \
+      --bootstrap-server {{ kafka_bootstrap_server }} \
+      --replication-factor 3 \
+      --partitions 1 \
+      --topic {{ topico_kafka_trader }} \
+      --command-config /home/ec2-user/kafka_2.13-{{ versao_kafka }}/config/client.properties
+  when: check_topico_trader.rc != 0
+  args:
+    creates: "/var/log/ansible_kafka_topic_trades_created.log"
+
+- name: Copia jar do producer Coins Kafka do local para instancia EC2
   ansible.builtin.copy:
-    src: "{{ playbook_dir }}/programs/producer-producer-crypto.jar"
-    dest: /home/ec2-user/producer-producer-crypto.jar
+    src: "{{ playbook_dir }}/programs/producer-crypto.jar"
+    dest: /home/ec2-user/producer-crypto.jar
 
-- name: Executa producer Kafka
-  ansible.builtin.command: >    
-    nohup java -jar /home/ec2-user/producer-producer-crypto.jar {{alpaca_api_key}} {{alpaca_secret_key}} {{kafka_bootstrap_server}}
-  async: 10 
+- name: Executa producer Kafka Coins em background
+  ansible.builtin.command: >
+    java -jar /home/ec2-user/producer-crypto.jar {{alpaca_api_key}} {{alpaca_secret_key}} {{kafka_bootstrap_server}}
+  async: 3600
   poll: 0
+  register: producer_coins_result
 
+- name: Copia jar do producer Trader Kafka do local para instancia EC2
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/programs/producer-trader.jar"
+    dest: /home/ec2-user/producer-trader.jar
+
+- name: Executa producer Kafka Trader em background
+  ansible.builtin.command: >
+    java -jar /home/ec2-user/producer-trader.jar {{kafka_bootstrap_server}}
+  async: 3600
+  poll: 0 
+  register: producer_trader_result
+
+- name: Verifica se o processo do producer Coins está funcionando
+  ansible.builtin.shell: "ps aux | grep 'producer-crypto.jar' | grep -v grep"
+  register: check_producer_coins
+  ignore_errors: true
+
+- name: Exibe status do producer Coins
+  debug:
+    msg: "Producer Coins está em execução: {{ check_producer_coins.stdout_lines }}"
+
+- name: Verifica se o processo do producer Trader está funcionando
+  ansible.builtin.shell: "ps aux | grep 'producer-trader.jar' | grep -v grep"
+  register: check_producer_trader
+  ignore_errors: true
+
+- name: Exibe status do producer Trader
+  debug:
+    msg: "Producer Trader está em execução: {{ check_producer_trader.stdout_lines }}"

@@ -2,6 +2,10 @@ variable "dir_raiz_projeto" {
   type = string
 }
 
+variable "coin_api_key" {
+  type = string
+}
+
 data "external" "ip_local" {
   program = ["bash", "${var.dir_raiz_projeto}/programs/obter-ip-local.sh"]
 }
@@ -16,6 +20,7 @@ module "vpc" {
 
 module "s3" {
   source = "./modules/s3"
+  dir_raiz_s3 = var.dir_raiz_projeto
 }
 
 module "kafka" {
@@ -62,8 +67,24 @@ module "macie" {
   bucket_nomes_macie = module.s3.buckets_iceberg_data
 }
 
+module "lambda" {
+  source = "./modules/lambda"
+  engenheiro_servico_role_lambda = module.iam.engenheiro_servico_role
+  bucket_programs_lake_lambda = module.s3.bucket_programs_lake
+  coin_api_key_lambda = var.coin_api_key
+}
+
 module "cloudwatch" {
   source = "./modules/cloudwatch"
   alarme_topico_cw = module.sns.alarme_topico_arn
   bucket_nomes_cw = module.s3.buckets_iceberg_data
+  otimiza_tabelas_arn_cw = module.lambda.otimiza_tabelas_lambda_arn
+  otimiza_tabelas_name_cw = module.lambda.otimiza_tabelas_lambda_name
+  atualiza_icons_arn_cw = module.lambda.atualiza_icons_lambda_arn
+  atualiza_icons_name_cw = module.lambda.atualiza_icons_lambda_name
 }
+
+module "elastic" {
+  source = "./modules/elastic"
+}
+

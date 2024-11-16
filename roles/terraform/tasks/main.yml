@@ -4,13 +4,13 @@
     chdir: "{{ playbook_dir }}/roles/terraform/files"
 
 - name: Realiza plan do deploy da Infra
-  command: terraform plan -var "dir_raiz_projeto={{ playbook_dir }}" -out=tfplan
+  command: terraform plan -var "dir_raiz_projeto={{ playbook_dir }}" -var "coin_api_key={{ coin_api_key }}" -out=tfplan
   args:
     chdir: "{{ playbook_dir }}/roles/terraform/files"
   when: acao == 'deploy'
 
 - name: Realiza plan do destroy da Infra
-  command: terraform plan -destroy -var "dir_raiz_projeto={{ playbook_dir }}" -out=tfplan
+  command: terraform plan -destroy -var "dir_raiz_projeto={{ playbook_dir }}" -var "coin_api_key={{ coin_api_key }}" -out=tfplan
   args:
     chdir: "{{ playbook_dir }}/roles/terraform/files"
   when: acao == 'destroy'

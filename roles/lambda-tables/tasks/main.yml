@@ -1,0 +1,15 @@
+---
+- name: Executa funcao Lambda para criacao das tabelas
+  amazon.aws.lambda_execute:
+    name: "executa-criacao-tabelas"
+  register: lambda_result
+
+- name: Verifica resultado da chamada Lambda se falhou
+  debug:
+    msg: "Resultado da chamada Lambda: {{ lambda_result }}"
+  when: lambda_result.failed
+
+- name: Verifica resultado da chamada Lambda se executou com sucesso
+  debug:
+    msg: "Função Lambda executada com sucesso: {{ lambda_result }}"
+  when: not lambda_result.failed

@@ -3,9 +3,26 @@ resource "aws_iam_group" "engenheiro_lake" {
   path = "/users/"
 }
 
-resource "aws_iam_group_policy" "engenheiro_policy" {
+resource "aws_iam_role" "engenheiro_role" {
+  name = "engenheiro-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action    = "sts:AssumeRole",
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        },
+        Effect    = "Allow",
+        Sid       = ""
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "engenheiro_policy" {
   name  = "engenheiro-policy"
-  group = aws_iam_group.engenheiro_lake.name
+  role = aws_iam_role.engenheiro_role.id
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -14,6 +31,7 @@ resource "aws_iam_group_policy" "engenheiro_policy" {
         "Action": [
           "s3:*",
           "glue:*",
+          "athena:*",
           "emr:*",
           "cloudwatch:ListMetrics",
           "cloudwatch:GetMetricData"
@@ -173,14 +191,28 @@ resource "aws_iam_role" "msk_ec2_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "attach_msk_ec2_policy" {
+resource "aws_iam_role_policy_attachment" "msk_ec2_policy_attachment" {
   role = aws_iam_role.msk_ec2_role.name
+  policy_arn = aws_iam_policy.msk_ec2_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "emr_ec2_msk_policy_attachment" {
+  role = aws_iam_role.emr_ec2_role.name
+  policy_arn = aws_iam_policy.msk_ec2_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "emr_service_msk_policy_attachment" {
+  role = aws_iam_role.emr_servico_role.name
   policy_arn = aws_iam_policy.msk_ec2_policy.arn
 }
 
 resource "aws_iam_instance_profile" "msk_instance_profile" {
   name = "msk-instance-profile"
   role = aws_iam_role.msk_ec2_role.name
+}
+
+output "engenheiro_servico_role" {
+  value = aws_iam_role.engenheiro_role.arn
 }
 
 output "emr_instance_profile_arn" {

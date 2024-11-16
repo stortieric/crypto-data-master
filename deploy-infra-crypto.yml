@@ -1,0 +1,6 @@
+---
+- name: Criacao de Recursos na AWS
+  hosts: local
+  gather_facts: no
+  roles:
+    - terraform

@@ -81,10 +81,9 @@ object KafkaConsumerCryptoElastic {
       .select(
         col("asset_id"),
         col("asset_type"),
-        col("window.start").as("start_window"),
-        col("window.end").as("end_window"),
+        date_format(col("window.start"), "HH:mm").as("start_window"),
         col("price_crypto"),
-        col("ref_date")
+        date_format(col("window.start"), "yyyy-MM-dd").as("ref_date")
       )
     }
 

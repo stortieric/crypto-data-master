@@ -62,6 +62,10 @@ output "elasticsearch_region" {
   value = ec_deployment.crypto_dash.elasticsearch[0].region
 }
 
+output "kibana_endpoint" {
+  value = ec_deployment.crypto_dash.kibana[0].https_endpoint
+}
+
 output "elasticsearch_password" {
   value = ec_deployment.crypto_dash.elasticsearch_password
   sensitive = true
@@ -75,6 +79,9 @@ resource "null_resource" "atualiza_elasticsearch" {
       # Atualiza o valor do node do Elastic com o output do Terraform
       sed -i 's|^elasticsearch_nodes=.*|elasticsearch_nodes="${ec_deployment.crypto_dash.elasticsearch[0].resource_id}.${ec_deployment.crypto_dash.elasticsearch[0].region}.aws.found.io"|' $INVENTORY_FILE && \
       
+      # Atualiza o valor do endpoint do Kibana com o output do Terraform
+      sed -i 's|^kibana_endpoint=.*|kibana_endpoint="${ec_deployment.crypto_dash.kibana[0].https_endpoint}"|' $INVENTORY_FILE && \
+
       # Atualiza o valor do password do Elastic com o output do Terraform
       sed -i 's|^elasticsearch_password=.*|elasticsearch_password="${ec_deployment.crypto_dash.elasticsearch_password}"|' $INVENTORY_FILE
     EOT

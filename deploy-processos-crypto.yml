@@ -35,3 +35,11 @@
   roles:
     - role: spark-submit-els 
       when: acao == 'deploy'
+
+- name: Cria o dashboard de acompanhamento no Kibana
+  hosts: local
+  become: false
+  gather_facts: false
+  roles:
+    - role: kibana-dash
+      when: acao == 'deploy'

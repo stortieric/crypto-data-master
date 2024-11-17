@@ -1,0 +1,19 @@
+- name: Verifica se o Kibana está disponível
+  ansible.builtin.uri:
+    url: "{{ kibana_endpoint }}/api/status"
+    method: GET
+    return_content: yes
+  register: kibana_status
+  retries: 5
+  delay: 10
+  until: kibana_status.status == 200
+
+- name: Importa o dashboard Crypto Cotação de Mercado
+  ansible.builtin.shell: |
+    curl -k -u "{{elasticsearch_user}}:{{elasticsearch_password}}" \
+      -X POST "{{kibana_endpoint}}/api/saved_objects/_import?overwrite=true" \
+      -H "kbn-xsrf: true" \
+      --form file=@"{{playbook_dir}}/programs/crypto-kibana.ndjson"
+  register: shell_result
+  changed_when: shell_result.rc == 0
+  failed_when: shell_result.rc != 0

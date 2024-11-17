@@ -115,7 +115,7 @@ resource "null_resource" "atualiza_ip_ec2_msk" {
       INVENTORY_FILE="${var.dir_raiz_ec2}/inventory.ini"
 
       # Atualiza o ip do ec2 client com o output do Terraform
-      sed -i '8s|.*|${aws_instance.ec2_msk_client.public_ip}|' $INVENTORY_FILE
+      sed -i '11s|.*|${aws_instance.ec2_msk_client.public_ip}|' $INVENTORY_FILE
     EOT
   }
   depends_on = [aws_instance.ec2_msk_client] 

@@ -26,3 +26,7 @@
   changed_when: false
   register: elastic_job_result
   failed_when: elastic_job_result is failed
+
+- name: Aguardar 60 segundos após o lançamento do job Elastic
+  ansible.builtin.pause:
+    seconds: 60

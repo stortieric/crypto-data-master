@@ -220,7 +220,7 @@ resource "null_resource" "atualiza_ip_emr_s3" {
       INVENTORY_FILE="${var.dir_raiz_emr}/inventory.ini"
 
       # Atualiza o ip do emr s3 com o output do Terraform
-      sed -i '21s|.*|${aws_emr_cluster.emr_cluster_s3.master_public_dns}|' $INVENTORY_FILE
+      sed -i '24s|.*|${aws_emr_cluster.emr_cluster_s3.master_public_dns}|' $INVENTORY_FILE
     EOT
   }
   depends_on = [aws_emr_cluster.emr_cluster_s3]
@@ -232,7 +232,7 @@ resource "null_resource" "atualiza_ip_emr_els" {
       INVENTORY_FILE="${var.dir_raiz_emr}/inventory.ini"
 
       # Atualiza o ip do emr els com o output do Terraform
-      sed -i '29s|.*|${aws_emr_cluster.emr_cluster_els.master_public_dns}|' $INVENTORY_FILE
+      sed -i '32s|.*|${aws_emr_cluster.emr_cluster_els.master_public_dns}|' $INVENTORY_FILE
     EOT
   }
   depends_on = [aws_emr_cluster.emr_cluster_els]

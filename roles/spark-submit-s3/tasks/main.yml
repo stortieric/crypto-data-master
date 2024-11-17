@@ -35,6 +35,10 @@
   register: crypto_job_result
   failed_when: crypto_job_result is failed
 
+- name: Aguardar 60 segundos após o lançamento do job Crypto
+  ansible.builtin.pause:
+    seconds: 60
+
 - name: Executa o spark-submit do streaming do Trader
   ansible.builtin.command: /tmp/run_spark_s3.sh "{{ kafka_bootstrap_server }}" "/tmp/KafkaConsumerTraderS3-1.0.jar" "{{ trader_class }}" "/home/hadoop/spark_streaming_trader.log"
   args:
@@ -44,3 +48,7 @@
   changed_when: false
   register: trader_job_result
   failed_when: trader_job_result is failed
+
+- name: Aguardar 60 segundos após o lançamento do job Trader
+  ansible.builtin.pause:
+    seconds: 60

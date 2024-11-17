@@ -1,4 +1,4 @@
-# Guia de Instalação do Projeto na Cloud
+# Guia de Instalação
 
 Este documento fornece uma descrição passo a passo da instalação da infra, setup dos processos e execução do projeto [CRYPTO DATA MASTER] utilizando a [AWS] e [ELASTIC CLOUD].
 

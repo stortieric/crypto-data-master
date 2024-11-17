@@ -15,9 +15,9 @@ A execução desse projeto prevê os seguintes pré-requisitos:
 
 ## Passo a Passo
 
-### Passo 1: Criar uma Conta
+### Passo 1: Criar uma Conta na AWS
 
-1. Visite [link da plataforma].
+1. Visite [https://aws.amazon.com/pt/console/?nc1=h_ls].
 2. Clique em **Registrar** e preencha o formulário de inscrição.
 3. Verifique seu e-mail e ative sua conta.
 

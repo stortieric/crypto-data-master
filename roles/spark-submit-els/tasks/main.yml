@@ -1,0 +1,28 @@
+- name: Copia o script de execução para o nó master
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/roles/spark-submit-els/files/run_spark_els.sh"
+    dest: /tmp/
+    mode: '0755'
+
+- name: Copia o JAR pardo Elastic para o nó master
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/programs/KafkaConsumerCryptoElastic-1.0.jar"
+    dest: /tmp/KafkaConsumerCryptoElastic-1.0.jar
+  register: copy_elastic_result
+  failed_when: copy_elastic_result is failed
+
+- name: Define os parâmetros de conexão com o Elasticsearch
+  set_fact:
+    es_nodes: "{{ elasticsearch_nodes }}"
+    es_port: "{{ elasticsearch_port }}"
+    es_auth_pass: "{{ elasticsearch_password }}"
+
+- name: Executa o spark-submit do streaming do Elastic
+  ansible.builtin.command: /tmp/run_spark_els.sh "{{ kafka_bootstrap_server }}" "/tmp/KafkaConsumerCryptoElastic-1.0.jar" "{{ es_nodes }}" "{{ es_port }}" "{{ es_auth_pass }}" "/home/hadoop/spark_streaming_elastic.log"
+  args:
+    chdir: /home/hadoop
+  async: 3600
+  poll: 0
+  changed_when: false
+  register: elastic_job_result
+  failed_when: elastic_job_result is failed

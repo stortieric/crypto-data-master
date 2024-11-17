@@ -13,3 +13,15 @@
   debug:
     msg: "Função Lambda executada com sucesso: {{ lambda_result }}"
   when: not lambda_result.failed
+
+- name: Executa funcao Lambda para atualizar os icones das moedas em background
+  amazon.aws.lambda_execute:
+    name: "atualiza-assets-icons"
+  async: 3600
+  poll: 0
+  register: lambda_assets_result
+
+- name: Verificar status da função Lambda
+  debug:
+    msg: "Resultado da chamada Lambda (assets): {{ lambda_assets_result }}"
+  when: lambda_assets_result.changed

@@ -10,7 +10,19 @@ variable "coin_api_key_lambda" {
   type = string
 }
 
-resource "aws_lambda_function" "executa_queries" {
+variable "lambda_cria_tabelas_key_lambda" {
+  type = string
+}
+
+variable "lambda_otimiza_tabelas_key_lambda" {
+  type = string
+}
+
+variable "lambda_atualiza_icons_key_lambda" {
+  type = string
+}
+
+resource "aws_lambda_function" "executa_criacao_tabelas" {
   function_name = "executa-criacao-tabelas"
   role = var.engenheiro_servico_role_lambda
   handler = "create-tables-athena.create_tables"
@@ -20,6 +32,14 @@ resource "aws_lambda_function" "executa_queries" {
   s3_key = "create-tables-athena.zip"
 
   timeout = 60
+
+  depends_on = [var.lambda_cria_tabelas_key_lambda]
+
+  tags = {
+    Name = "crypto-lake"
+    Environment = "prd"
+  }
+
 }
 
 resource "aws_lambda_function" "otimiza_tabelas_lambda" {
@@ -32,6 +52,14 @@ resource "aws_lambda_function" "otimiza_tabelas_lambda" {
   s3_key = "optimize-tables-athena.zip"
 
   timeout = 900
+
+  depends_on = [var.lambda_otimiza_tabelas_key_lambda]
+
+  tags = {
+    Name = "crypto-lake"
+    Environment = "prd"
+  }
+
 }
 
 resource "aws_lambda_function" "atualiza_icons_lambda" {
@@ -49,6 +77,13 @@ resource "aws_lambda_function" "atualiza_icons_lambda" {
     }
   }
   timeout = 900
+
+  tags = {
+    Name = "crypto-lake"
+    Environment = "prd"
+  }
+
+  depends_on = [var.lambda_atualiza_icons_key_lambda]
 
 }
 

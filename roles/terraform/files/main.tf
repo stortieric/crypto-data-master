@@ -52,6 +52,7 @@ module "emr" {
   servico_role_emr = module.iam.emr_servico_role
   ip_local_emr = data.external.ip_local.result["ip"]
   sg_kms_id_emr = module.kafka.sg_kms_id
+  dir_raiz_emr = var.dir_raiz_projeto
 }
 
 module "sns" {
@@ -72,7 +73,11 @@ module "lambda" {
   engenheiro_servico_role_lambda = module.iam.engenheiro_servico_role
   bucket_programs_lake_lambda = module.s3.bucket_programs_lake
   coin_api_key_lambda = var.coin_api_key
+  lambda_cria_tabelas_key_lambda = module.s3.lambda_cria_tabelas_key
+  lambda_otimiza_tabelas_key_lambda = module.s3.lambda_otimiza_tabelas_key
+  lambda_atualiza_icons_key_lambda = module.s3.lambda_atualiza_icons_key
 }
+
 
 module "cloudwatch" {
   source = "./modules/cloudwatch"
@@ -86,5 +91,6 @@ module "cloudwatch" {
 
 module "elastic" {
   source = "./modules/elastic"
+  dir_raiz_els = var.dir_raiz_projeto
 }
 

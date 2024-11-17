@@ -22,6 +22,10 @@ variable "sg_kms_id_emr" {
   type = string
 }
 
+variable "dir_raiz_emr" {
+  type = string
+}
+
 resource "aws_subnet" "subnet_emr" {
   vpc_id = var.vpc_emr
   cidr_block = "10.0.5.0/24"
@@ -202,3 +206,34 @@ resource "null_resource" "armazena_private_key_emr_els" {
   depends_on = [aws_key_pair.key_pair_emr_els]
 }
 
+output "emr_master_publico_ip_s3" {
+  value = aws_emr_cluster.emr_cluster_s3.master_public_dns
+}
+
+output "emr_master_publico_ip_els" {
+  value = aws_emr_cluster.emr_cluster_els.master_public_dns
+}
+
+resource "null_resource" "atualiza_ip_emr_s3" {
+  provisioner "local-exec" {
+    command = <<EOT
+      INVENTORY_FILE="${var.dir_raiz_emr}/inventory.ini"
+
+      # Atualiza o ip do emr s3 com o output do Terraform
+      sed -i '21s|.*|${aws_emr_cluster.emr_cluster_s3.master_public_dns}|' $INVENTORY_FILE
+    EOT
+  }
+  depends_on = [aws_emr_cluster.emr_cluster_s3]
+}
+
+resource "null_resource" "atualiza_ip_emr_els" {
+  provisioner "local-exec" {
+    command = <<EOT
+      INVENTORY_FILE="${var.dir_raiz_emr}/inventory.ini"
+
+      # Atualiza o ip do emr els com o output do Terraform
+      sed -i '29s|.*|${aws_emr_cluster.emr_cluster_els.master_public_dns}|' $INVENTORY_FILE
+    EOT
+  }
+  depends_on = [aws_emr_cluster.emr_cluster_els]
+}

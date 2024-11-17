@@ -13,6 +13,10 @@ terraform {
   }
 }
 
+variable "dir_raiz_els" {
+  type = string
+}
+
 data "aws_secretsmanager_secret" "key_elastic_cloud" {
   name = "api_key_elastic_cloud_dm"
 }
@@ -36,7 +40,7 @@ resource "ec_deployment" "crypto_dash" {
     topology {
       id = "hot_content"
       size = "4g"
-      zone_count = 1 
+      zone_count = 2
     }
     autoscale = false
   }
@@ -44,14 +48,18 @@ resource "ec_deployment" "crypto_dash" {
   kibana {
     topology {
       size = "1g"
-      zone_count = 1
+      zone_count = 2
     }
   }
   
 }
 
-output "elasticsearch_username" {
-  value = ec_deployment.crypto_dash.elasticsearch_username
+output "elasticsearch_resource_id" {
+  value = ec_deployment.crypto_dash.elasticsearch[0].resource_id
+}
+
+output "elasticsearch_region" {
+  value = ec_deployment.crypto_dash.elasticsearch[0].region
 }
 
 output "elasticsearch_password" {
@@ -59,6 +67,17 @@ output "elasticsearch_password" {
   sensitive = true
 }
 
-output "kibana_endpoint" {
-  value = ec_deployment.crypto_dash.kibana[0].https_endpoint
+resource "null_resource" "atualiza_elasticsearch" {
+  provisioner "local-exec" {
+    command = <<EOT
+      INVENTORY_FILE="${var.dir_raiz_els}/inventory.ini"
+
+      # Atualiza o valor do node do Elastic com o output do Terraform
+      sed -i 's|^elasticsearch_nodes=.*|elasticsearch_nodes="${ec_deployment.crypto_dash.elasticsearch[0].resource_id}.${ec_deployment.crypto_dash.elasticsearch[0].region}.aws.found.io"|' $INVENTORY_FILE && \
+      
+      # Atualiza o valor do password do Elastic com o output do Terraform
+      sed -i 's|^elasticsearch_password=.*|elasticsearch_password="${ec_deployment.crypto_dash.elasticsearch_password}"|' $INVENTORY_FILE
+    EOT
+  }
+  depends_on = [ec_deployment.crypto_dash]
 }

@@ -15,17 +15,20 @@ A execução desse projeto prevê os seguintes pré-requisitos:
 
 ## Passo a Passo
 
-### Passo 1: Criar uma Conta na AWS
+### Passo 1: Criar uma conta na AWS
 
 1. Visite [https://aws.amazon.com/pt/console/?nc1=h_ls].
-2. Clique em **Registrar** e preencha o formulário de inscrição.
-3. Verifique seu e-mail e ative sua conta.
+2. Clique em **Faça login no console** e preencha os dados necessários.
+3. No menu lateral da sua conta escolha a opção **Credencias de segurança**. Em **Chaves de acesso** cria uma nova e lembre-se de armazenar a Chave de acesso e Chave de acesso secreta em um local seguro. Utilizaremos ela para logar na nossa conta via AWS Cli. Obs.: Será necessário cadastrar seu cartão, pois o projeto utiliza alguns recursos pagos.
 
-### Passo 2: Configurar o Ambiente
+### Passo 2: Criar uma conta no Elastic Cloud
 
-1. Faça login na sua conta [Nome da Plataforma].
-2. Navegue até **Painel de Controle** > **Configurações do Ambiente**.
-3. Selecione **Criar Novo Ambiente** e escolha:
+1. Visite [https://www.elastic.co/pt/cloud].
+2. Clique em **Iniciar avaliação gratuita**, resposta as perguntas e pode iniciar a criação do cluster.
+3. Quando o deployment termninar você pode excluí-lo clicando em **Manage**, depois selecione a opção **Delete deployment** em **Actions**.
+4. No menu lateral da sua conta escolha a opção **Organization** e depois o menu **API Keys**.
+5. Crie um API Key em **Create API key**, dê um nome adequado e marque a opção *Organization owner*. Copie a key em um local adequado.
+6. 
    - **Região**: [Escolha a região mais próxima a você]
    - **Tipo de Servidor**: [Especificar se aplicável]
 

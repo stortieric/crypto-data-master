@@ -4,11 +4,14 @@ Este documento fornece uma descrição passo a passo da instalação da infra, s
 
 ## Pré-requisitos
 
-Antes de iniciar a instalação, certifique-se de que você tem os seguintes pré-requisitos:
+A execução desse projeto prevê os seguintes pré-requisitos:
 
-- Conta na plataforma [Nome da Plataforma]
-- [Software/Ferramentas] instalado(s) no seu sistema
-- Permissões adequadas de administrador
+- Conta na cloud AWS (gratuito - paga pelos recursos)
+- Conta na Elastic Cloud (gratuito por 15 dias)
+- Conta na plataforma Alpaca (gratutito)
+- Conta na plataforma CoinAPI (gratutito)
+- Sistema operacional Linux - Ubuntu/Debian
+- Ferramentas - Python, Ansible, Terraform, Git e VSCode (pode ser outra IDE de sua escolha)
 
 ## Passo a Passo
 

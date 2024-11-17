@@ -28,9 +28,8 @@ A execução desse projeto prevê os seguintes pré-requisitos:
 3. Quando o deployment termninar você pode excluí-lo clicando em **Manage**, depois selecione a opção **Delete deployment** em **Actions**.
 4. No menu lateral da sua conta escolha a opção **Organization** e depois o menu **API Keys**.
 5. Crie um API Key em **Create API key**, dê um nome adequado e marque a opção *Organization owner*. Copie a key em um local adequado.
-6. 
-   - **Região**: [Escolha a região mais próxima a você]
-   - **Tipo de Servidor**: [Especificar se aplicável]
+6. Como utilizaremos no Terraform e é uma informação muito sensível, vamos voltar a AWS e armazenar esse valor no AWS Secret Manager. Na página inicial busque por *Secrets Manager*, nesse projeto vou utilizar a região *us-east-1*.
+7. No Secrets Manager escolha a opção **Armazenar um novo segredo**, selecione a opção **Outro tipo de segredo**, como chave coloque **api_key_elastic_cloud_dm**, se colocar outro nome terá problemas na execução do projeto e não escolha uma região diferente da execução do Terraform, como valor coloque sua key do Elastic. Siga até a etapa final e clique em **Armazenar**.
 
 ### Passo 3: Desplegar o Projeto
 

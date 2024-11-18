@@ -1,4 +1,22 @@
-# Projeto de Dados - [Crypto Data Master]
+# Projeto de Dados
+
+<table>
+    <tr>
+        <td style="text-align:center;">
+            <img src="https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_256/4caf2b16a0174e26a3482cea69c34cba.png" alt="bitcoin" style="width: 50px;"/> <!-- Ajuste a largura aqui -->
+        </td>
+        <td style="text-align:center;">
+            <strong>Crypto Data Master</strong>
+        </td>
+        <td style="text-align:center;">
+            <img src="https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_256/a201762f149941ef9b84e0742cd00e48.png" alt="litcoin" style="width: 50px;"/> <!-- Ajuste a largura aqui -->
+        </td>
+    </tr>
+</table>
+
+
+
+
 
 **Repositório:** [https://github.com/stortieric/crypto-data-master]
 

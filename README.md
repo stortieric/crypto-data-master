@@ -34,20 +34,66 @@ Com o uso do Cloudwatch podemos monitorar os recursos criamos na AWS, além de c
 
 O Macie provẽ uma solução em Machine Learning que ajuda a identificar, monitorar e proteger os dados sensíveis armazenados no S3, com ele habilitado a descoberta é feita de forma automática.
 
+Nosss arquitetura se assemelha a Kappa, pois tem como premissa a atualização de dados em tempo real, mas podemos combina-la com arquitetura medalhão que fornece uma governança melhor.
+
 ![tecnico](https://github.com/stortieric/crypto-data-master/blob/main/architecture/arquitetura-crypto-dm-tecnica.png)
 
+Vamos abordar agora uma visão mais técnica da arquitetura, todos os recurso do projeto são criados na AWS, na própria AWS e via Elastic Cloud. A região escolhida em ambos os casos é a us-east-1.
 
+Para criar e destruir os recursos automaticamente utilizei o Terraform, ideal para automação de infra em provedores de Cloud. Combinamos o Terraform com o Ansible, já este é ideal automação de processos dentro dos recursos, VMs, Docker, etc... Com os dois é possível salvar um bom tempo ao criar os recursos com um Enter no terminal e eliminar os recursos após os testes.
+
+O recurso EC2 que conecto via local é utilizado para criar os tópicos e executar os producers Kafka, o mesmo está em uma subnet pública com um internet gateway, possibilitando a conexão com minha máquina local.
+
+A instância EC2 conecta no MSK via SASL_SSL/IAM, que com a devida role e politica conecta no Kafka para alimentação dos tópicos. 
+
+Dentro das instâncias EMR, realizamos o submit dos jobs em Spark/Scala, a autenticação no Kafka também é via SASL_SSL/IAM, para o job que grava os dados no Elasticsearch utilizamos a autenticação por usuário e senha.
+
+Agendamos via Event Bridge o job de atualização dos ícones da moedas e também um que faz semanalmente a otimização das tabelas Iceberg, visto que tratamos de dados em streming, precisamos evitar um velho problema com small files.
+
+Os recursos EC2, EMR e MSK são gerenciados pelo cliente, por isso os mesmo estão em uma VPC com seus respectivos grupos de segurança configurados, garantindo apenas a comunicação entre eles e nossa máquina local.
+
+Todos os outros recursos são gerenciados pela AWS, por isso existe apenas a necessidade de configuração de roles, grupos e usuários, a infra é gerenciada pela AWS.
+
+O Elastic Cloud fornece a opção de escolha do provedor de cloud, região e quantidade de zonas de disponibilidades, fora isso, temos a necessidade também de configurar devidamente os acessos.
 
 ## III. Explicação sobre o Case Desenvolvido
 
-[Descreva detalhadamente o desenvolvimento do projeto. Inclua informações sobre o processo de coleta, tratamento e análise de dados.  Explique as etapas principais do desenvolvimento e as decisões tomadas ao longo do processo. Use subseções para organizar melhor a informação.  Seja preciso e evite jargões técnicos excessivos a menos que sejam essenciais para a compreensão.]
+Agora vamos explicar com maiores detalhes o case desenvolvido, para isso vamos em etapas.
 
-**Exemplo de Subseções:**
+* **Ingestão:**
 
-* **Coleta de Dados:** [Explicação da origem dos dados e métodos de coleta.]
-* **Pré-processamento de Dados:** [Limpeza, transformação e preparação dos dados para análise.]
-* **Modelagem e Análise:** [Descrição dos modelos utilizados e os resultados obtidos.]
-* **Implementação:** [Detalhes da implementação, incluindo tecnologias e metodologias.]
+Na etapa de ingestão pensamos na melhor estratégia que se encaixava em nosso case, a escolha foi criação de dois producers em JAVA. O ProducerCrypto-1.0.jar tem como objetivo conectar na API da Alpaca e atualizar a cada 5 segundos os dados de cotação de cripto. O ProducerTrader-1.0.jar simula dados de compra e venda de cripto. Os dois são enviados para um tópico Kafka cada um, os tópicos coinbase-currencies e coinbase-trades, respectivamente.
+
+A criação dos tópicos e execução dos processos em Java são realizados na intância EC2 que configuramos via Terrafom, o processo salva e chave ssh na em nosso local, toda configuração é feita via Ansible.
+
+Uma das etapa do playbook deploy-processos-crypto ansible é automatizar a criação das tabelas no catálogo Glue e realizar uma carga porntual da tabela crypto_db.crypto_assets. No Terraform configuramos duas funções Lambda que realizam a execução serveless desses processos, no caso da atualização da tabela crypto_db.crypto_assets agendamos um regra no Event Bridge que executará esse processo uma vez ao dia.
+
+* **Processamento:**
+
+Sobre o processamento feito em função Lambda da tabela crypto_db.crypto_assets falamos no tópico anterior, agora vamos falar sobre o EMR.
+
+Essa foi a escolha para processamento dos nossos jobs em Spark/Scala. O EMR não é um recurso exclusivo para processamento Spark, podemos configurar um cluster Flink, Hive e Presto, por exemplo. 
+
+Temos 3 jobs para executar em Spark, o KafkaConsumerCryptoS3-1.0.jar que consome os dados do tópico Kafka coinbase-currencies e os envia para o S3 em formato Iceberg e atualiza a tabela crypto_db.crypto_quote. Temos um job semelhante a este chamado KafkaConsumerCryptoElastic-1.0.jar porém seu destino é outro, enviamos os dados para o Elasticsearch e criamos automaticamente um índice chamado CRYPTO_QUOTE, o mesmo será utilizado no relatório de acompanhamento de cripto.
+
+* **Armazenamento:**
+
+Os dados são armazenados no S3, criamos 3 buckets: bronze-iceberg-data, silver-iceberg-data e gold-iceberg-data, cada um será responsável por armazenar um tipo de informação. Em nosso case alimentamos apenas a camada bronze, criamos um database no Glue chamado crypto_db. Levando em consideração e evolução dos nossos dados escolhemos o formato Iceberg, sabemos que um arquivo parquet é imutável, assim precisamos de um formato que seja mais flexível.
+
+O formato Iceberg permite schema evolution, time travel, além de outros. Uma das vantagens em relação ao Delta é o partition evolution, na minha visão é importante, pois com o tempo, conforme a necessidade de negócio ou performance precisamos adotar uma estratégia difente para otimização da leitura.
+
+* **Governança:**
+
+
+
+* **Segurança:**
+
+
+* **Observabilidade:**
+
+
+
+
 
 
 ## IV. Melhorias e Considerações Finais

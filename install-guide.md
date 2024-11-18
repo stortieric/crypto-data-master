@@ -31,18 +31,18 @@ A execução desse projeto prevê os seguintes pré-requisitos:
 6. Como utilizaremos no Terraform e é uma informação muito sensível, vamos voltar a AWS e armazenar esse valor no AWS Secret Manager. Na página inicial busque por *Secrets Manager*, nesse projeto vou utilizar a região *us-east-1*.
 7. No Secrets Manager escolha a opção **Armazenar um novo segredo**, selecione a opção **Outro tipo de segredo**, como chave coloque **api_key_elastic_cloud_dm**, se colocar outro nome terá problemas na execução do projeto e não escolha uma região diferente da execução do Terraform, como valor coloque sua key do Elastic. Siga até a etapa final e clique em **Armazenar**.
 
-### Passo 3: Desplegar o Projeto
+### Passo 3: Criar uma conta na Alpaca Markets
 
-1. No Painel de Controle, vá para **Desplegar Aplicação**.
-2. Escolha a opção **Desplegar a partir do Repositório**.
-3. Insira o URL do seu repositório [GitHub/GitLab/Outros] e clique em **Conectar**.
+1. Visite [https://docs.alpaca.markets/].
+2. Escolha a opção **Trading Dashboard** e siga as intruções para criação de conta, você pode escolher como país o Estados Unidos.
+3. Para habilitar qualquer opção vocẽ precisa cadatrar uma autenticação multi fator, escolha *SMS* ou um *APP de Autenticação*.
+4. Na *Home* do usuário, no canto inferior direito tem um card chamado **API Keys**, clique em **Generate New Keys** e copie a Key e a Secret em um local seguro.
 
-### Passo 4: Configurar Ferramentas de Gestão
+### Passo 4: Criar uma conta na CoinAPI
 
-1. Após a implantação, vá para **Configurações Avançadas**.
-2. Configure integrações como:
-   - **Monitoramento**: [Nome da Ferramenta]
-   - **Backup Automático**: [Configurações relevantes]
+1. Visite [https://www.coinapi.io/].
+2. Escolha a opção **Log in** e siga as instruções para conseguir o acesso.
+3. Após conseguir acesso no menu lateral escolha a opção **API Keys** e depois em **CREATE APIKET**. Na lista selecione **Market Data API** e então em **CREATE**. Armazene o valor em um local seguro.
 
 ### Passo 5: Testar a Instalação
 

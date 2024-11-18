@@ -34,9 +34,8 @@ Com o uso do Cloudwatch podemos monitorar os recursos criamos na AWS, além de c
 
 O Macie provẽ uma solução em Machine Learning que ajuda a identificar, monitorar e proteger os dados sensíveis armazenados no S3, com ele habilitado a descoberta é feita de forma automática.
 
-![solucao](https://github.com/stortieric/crypto-data-master/blob/main/architecture/arquitetura-crypto-dm-solucao.png)
+![tecnico](https://github.com/stortieric/crypto-data-master/blob/main/architecture/arquitetura-crypto-dm-tecnico.png)
 
-!(tecnico)[https://github.com/stortieric/crypto-data-master/blob/main/architecture/arquitetura-crypto-dm-tecnico.png]
 
 
 ## III. Explicação sobre o Case Desenvolvido

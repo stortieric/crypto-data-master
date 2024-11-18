@@ -4,6 +4,10 @@
 
 **Repositório:** [https://github.com/stortieric/crypto-data-master]
 
+**Importante** 
+
+Para criar a infraestrutura do projeto e executar os processos, siga as instruções disponíveis no [Passo a Passo](https://github.com/stortieric/crypto-data-master/blob/main/install-guide.md)
+
 ## I. Objetivo do Case
 
 Este case tem como objetivo a criação de um **data lake** na AWS que armazenará informações sobre criptomoedas. O mercado de criptomoedas atrai investimentos, e a possibilidade de tomada de decisão em tempo real é um grande incentivo para este projeto.

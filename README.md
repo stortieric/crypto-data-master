@@ -20,7 +20,7 @@ A seguir, discutiremos a arquitetura de solução e a arquitetura técnica.
 
 ## II. Arquitetura de Solução e Arquitetura Técnica
 
-### Solução
+![solucao](https://github.com/stortieric/crypto-data-master/blob/main/architecture/arquitetura-crypto-dm-solucao.png)
 
 Para o acompanhamento em tempo real dos dados de criptomoedas, criamos um **consumer** que envia os dados para um **broker** (MSK – serviço Kafka gerenciado pela AWS). O MSK recebe os dados da API Alpaca e os dados simulados do trader. Como as informações de logo das moedas não são atualizadas com tanta frequência, optamos por utilizar uma função **Lambda** para atualizar esses dados diariamente.
 
@@ -32,7 +32,7 @@ Para segurança, os dados na AWS são criptografados. O **CloudWatch** monitora 
 
 Nossa arquitetura se assemelha à **Kappa**, por priorizar atualização em tempo real, mas pode ser combinada com a arquitetura **Medalhão** para melhor governança.
 
-### Técnico
+![tecnico](https://github.com/stortieric/crypto-data-master/blob/main/architecture/arquitetura-crypto-dm-tecnica.png)
 
 Abordaremos agora uma visão técnica da arquitetura. Todos os recursos são criados na AWS e via **Elastic Cloud** na região **us-east-1**.
 
@@ -42,9 +42,7 @@ A instância **EC2** (conectada localmente) cria os tópicos e executa os produc
 
 A instância **EC2** conecta ao **MSK** via **SASL_SSL/IAM**. As instâncias **EMR** executam os jobs **Spark/Scala**, com autenticação via **SASL_SSL/IAM** para o Kafka e autenticação por usuário e senha para o Elasticsearch.
 
-O **Event Bridge** agenda a atualização dos ícones das moedas e a otimização semanal das tabelas Iceberg (para evitar problemas com small
-
-files em dados de streaming).
+O **Event Bridge** agenda a atualização dos ícones das moedas e a otimização semanal das tabelas Iceberg (para evitar problemas com small files em dados de streaming).
 
 Os recursos **EC2**, **EMR** e **MSK** são gerenciados pelo cliente, estando em uma **VPC** com seus respectivos grupos de segurança configurados. Outros recursos são gerenciados pela AWS, necessitando apenas de configuração de roles, grupos e usuários.
 
@@ -66,8 +64,8 @@ O processamento da tabela `crypto_db.crypto_assets` (via Lambda) foi descrito an
 
 Existem três jobs Spark: 
 - `KafkaConsumerCryptoS3-1.0.jar` (consome dados do tópico `coinbase-currencies` e envia para o S3 em formato Iceberg, atualizando a tabela `crypto_db.crypto_quote`);
+- `KafkaConsumerTraderS3-1.0.jar` (consome dados do tópico `coinbase-trades` e envia para o S3 em formato Iceberg, atualizando a tabela `crypto_db.crypto_trader`);
 - `KafkaConsumerCryptoElastic-1.0.jar` (semelhante ao anterior, mas envia os dados para o **Elasticsearch**, criando o índice **CRYPTO_QUOTE**);
-- Um job para otimização semanal das tabelas **Iceberg**.
 
 ### Armazenamento
 
@@ -91,6 +89,8 @@ A segurança inclui **VPC**, grupos de usuários com políticas **IAM** específ
 
 O **CloudWatch** monitora os recursos **EC2**, **MSK** e **EMR**. Alertas customizados são configurados e enviados via **SNS**. Tags ("crypto-lake") são usadas para melhor identificação dos recursos.
 
+Combinando o **CloudWatch** e o **SNS**, serviço de mensagens, podemos enviar alertas específicos. Por exemplo, criamos alertas que verificam o espaço em nossos buckets; quando o espaço excede 1 GB, recebemos um alerta por e-mail. Também criamos um alerta que detecta mais de 10 dados sensíveis no Macie, que nos envia uma notificação.
+
 ## IV. Considerações Finais
 
 Este projeto demonstra a construção de um **data lake** robusto e eficiente para o processamento de dados de criptomoedas em tempo real. No entanto, existem áreas para melhoria contínua:
@@ -103,7 +103,7 @@ Este projeto demonstra a construção de um **data lake** robusto e eficiente pa
 
 - **Monitoramento e Alerta Aprimorado**: A implementação de um sistema de monitoramento e alerta mais abrangente, que inclua métricas de performance detalhadas e alertas proativos para diferentes cenários de falha, contribuiria para maior estabilidade e confiabilidade do sistema.
 
-- **Integração com Ferramentas CI/CD**: A integração com ferramentas **CI/CD** (Integra Continuous Integration/Continuous Delivery) automatizaria o processo de build, teste e deploy da solução, garantindo um ciclo de vida de desenvolvimento mais ágil e eficiente.
+- **Integração com Ferramentas CI/CD**: A integração com ferramentas **CI/CD** automatizaria o processo de build, teste e deploy da solução, garantindo um ciclo de vida de desenvolvimento mais ágil e eficiente.
 
 A implementação dessas melhorias garantirá uma solução mais robusta, escalável e segura. O projeto está aberto a contribuições e sugestões para aprimoramentos futuros.
 

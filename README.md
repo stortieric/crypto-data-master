@@ -1,36 +1,27 @@
-# Projeto de Dados
+# Projeto de Dados 
 
-<table style="border-collapse: collapse; width: auto;">
-    <tr>
-        <td style="text-align:center; border: none;">
-            <img src="https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_256/4caf2b16a0174e26a3482cea69c34cba.png" alt="bitcoin" style="width: 30px;"/>
-        </td>
-        <td style="text-align:center; border: none;">
-            <strong>Crypto Data Master</strong>
-        </td>
-        <td style="text-align:center; border: none;">
-            <img src="https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_256/a201762f149941ef9b84e0742cd00e48.png" alt="litecoin" style="width: 30px;"/>
-        </td>
-    </tr>
-</table>
-
-
-
-
-
+# ![bitcoin](https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_32/4caf2b16a0174e26a3482cea69c34cba.png) Crypto Data Master ![litecoin](https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_32/a201762f149941ef9b84e0742cd00e48.png)
 
 **Repositório:** [https://github.com/stortieric/crypto-data-master]
 
 ## I. Objetivo do Case
 
-[Descreva claramente o objetivo principal do projeto.  Qual problema você está resolvendo?  Qual a meta a ser alcançada? Seja conciso e direto.]
+Este case tem por objetivo a criação de um Lake na AWS que armazenará informações sobre criptomoedas. Com certeza é um mercado que atrai investimento e o fato de poder tomar decisão em tempo real é um grande incentivo para este projeto. 
 
-Exemplo: Este projeto visa construir um sistema de recomendação de filmes baseado em dados de usuários e avaliações, com o objetivo de melhorar a experiência do usuário e aumentar o engajamento na plataforma.
+Como premissa, o projeto prevê todas informações possíveis sendo recebidas em tempo real, a dificuldade se torna grande, pois administrar processos em tempo real gera grande esforço, por isso, precisamos de uma infraestrutra confíável que encontramos na AWS. Apesar de toda a infra ser AWS utilizadmos o serviço Elastic Cloud que gerencia melhor os recursos Elasticsearch e Kibana, para utiliza-los precisamos escolher uma cloud como provedora, em nosso caso seguimos com AWS na mesma região que outros recursos para diminuir a latência.
 
+O projeto contém processos de coleta de dados da API Alpaca Market que fornece uma śerie de informações de cripto, além de outras ações. Inclusive é possível brincar de Trader com um saldo fictício na plataforma. Em nosso caso vamos consumir uma API com dados de cotação atualizados de minuto em minuto e de duas moedas, o Bitcoin e o Litecoin, podemos incluir outras, mas para nosso case vamos testar com duas.
+
+Como informação pública pessoal encontramos apenas em sites suspeitos na internet, vamos simular a compra e venda de cripto, o usuario escolhe comprar ou vender e de acordo com o horário podemos saber o valor de compra/venda por usuário. 
+
+Para ambos os casos consumimos dados em tempo real, desta forma poderemos ter o volume de venda e compra de cripto em pouco minutos. Para você que gosta de um dashboard, vamos consumir uma API da CoinAPI que armazena o logo de cada cripto ou moeda comum disponível no mercado, assim poderá utilizar os valores contidos na url para criar um dashboard mais atraente. 
+
+Sem mais, vamos discutir um pouco sobre a nossa arquitetura de solução e arquitetura técnica.
 
 ## II. Arquitetura de Solução e Arquitetura Técnica
 
-**Arquitetura de Solução:**
+![solucao](https://github.com/stortieric/crypto-data-master/blob/main/architecture/arquitetura-crypto-dm-solucao.png)
+
 
 [Descreva a arquitetura de alto nível do sistema, focando nos principais componentes e suas interações. Utilize um diagrama para visualizar a arquitetura.  Sugiro utilizar o **draw.io** (ferramenta online gratuita e fácil de usar) ou o **Lucidchart** (com opções gratuitas e pagas) para criar diagramas UML (Unified Modeling Language) ou diagramas de blocos.  Um diagrama de contexto também seria útil.]
 

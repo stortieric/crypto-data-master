@@ -1,18 +1,19 @@
 # Projeto de Dados
 
-<table>
+<table style="border-collapse: collapse; width: auto;">
     <tr>
-        <td style="text-align:center;">
-            <img src="https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_256/4caf2b16a0174e26a3482cea69c34cba.png" alt="bitcoin" style="width: 50px;"/> <!-- Ajuste a largura aqui -->
+        <td style="text-align:center; border: none;">
+            <img src="https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_256/4caf2b16a0174e26a3482cea69c34cba.png" alt="bitcoin" style="width: 30px;"/>
         </td>
-        <td style="text-align:center;">
+        <td style="text-align:center; border: none;">
             <strong>Crypto Data Master</strong>
         </td>
-        <td style="text-align:center;">
-            <img src="https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_256/a201762f149941ef9b84e0742cd00e48.png" alt="litecoin" style="width: 50px;"/> <!-- Ajuste a largura aqui -->
+        <td style="text-align:center; border: none;">
+            <img src="https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_256/a201762f149941ef9b84e0742cd00e48.png" alt="litecoin" style="width: 30px;"/>
         </td>
     </tr>
 </table>
+
 
 
 

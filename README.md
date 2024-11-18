@@ -1,9 +1,8 @@
-**bitcoin**  
-**Crypto**  
-**DM**  
-**litecoin**
+# Projeto de Dados 
 
-Repositório: [https://github.com/stortieric/crypto-data-master](https://github.com/stortieric/crypto-data-master)
+# ![bitcoin](https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_32/4caf2b16a0174e26a3482cea69c34cba.png) Crypto DM ![litecoin](https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_32/a201762f149941ef9b84e0742cd00e48.png)
+
+**Repositório:** [https://github.com/stortieric/crypto-data-master]
 
 ## I. Objetivo do Case
 
@@ -11,11 +10,11 @@ Este case tem como objetivo a criação de um **data lake** na AWS que armazenar
 
 Como premissa, o projeto prevê o recebimento de todas as informações possíveis em tempo real. A administração de processos em tempo real apresenta grande complexidade, exigindo uma infraestrutura confiável como a oferecida pela AWS. Embora toda a infraestrutura seja AWS, utilizamos o serviço **Elastic Cloud** para melhor gerenciamento dos recursos **Elasticsearch** e **Kibana**. Para utilizá-los, precisamos escolher um provedor de cloud; neste caso, mantivemos a AWS na mesma região de outros recursos para reduzir a latência.
 
-O projeto inclui processos de coleta de dados da **API Alpaca Markets**, que fornece uma série de informações sobre criptomoedas e outras ações. A plataforma permite até mesmo simular operações de trading com um saldo fictício. Em nosso caso, consumiremos uma API com dados de cotação atualizados a cada minuto para duas moedas: **Bitcoin** e **Litecoin**. Outras moedas podem ser incluídas posteriormente, mas, para este case, testaremos com apenas duas.
+O projeto inclui processos de coleta de dados da [**API Alpaca Markets**](https://docs.alpaca.markets/reference/cryptolatestbars-1), que fornece uma série de informações sobre criptomoedas e outras ações. A plataforma permite até mesmo simular operações de trading com um saldo fictício. Em nosso caso, consumiremos uma API com dados de cotação atualizados a cada minuto para duas moedas: **Bitcoin** e **Litecoin**. Outras moedas podem ser incluídas posteriormente, mas, para este case, testaremos com apenas duas.
 
 Como informações públicas sobre negociações individuais são difíceis de encontrar em fontes confiáveis, simularemos a compra e venda de criptomoedas. O usuário escolhe comprar ou vender, e o valor da transação é determinado pelo horário da operação.
 
-Para ambos os casos (API Alpaca e simulação de trading), consumimos dados em tempo real, permitindo o acompanhamento do volume de compra e venda em poucos minutos. Para a criação de um dashboard mais atraente, utilizaremos uma API da **CoinAPI** que fornece os logos das criptomoedas e moedas comuns disponíveis no mercado.
+Para ambos os casos (API Alpaca e simulação de trading), consumimos dados em tempo real, permitindo o acompanhamento do volume de compra e venda em poucos minutos. Para a criação de um dashboard mais atraente, utilizaremos uma API da [**CoinAPI**](https://docs.coinapi.io/market-data/rest-api/metadata/list-all-asset-icons) que fornece os logos das criptomoedas e moedas comuns disponíveis no mercado.
 
 A seguir, discutiremos a arquitetura de solução e a arquitetura técnica.
 

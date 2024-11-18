@@ -1,6 +1,6 @@
-# Projeto de Dados - [Nome do Projeto]
+# Projeto de Dados - [Crypto Data Master]
 
-**Repositório:** [Link do Repositório GitHub]
+**Repositório:** [https://github.com/stortieric/crypto-data-master]
 
 ## I. Objetivo do Case
 

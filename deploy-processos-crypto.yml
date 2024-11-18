@@ -16,17 +16,27 @@
     - role: kafka-producer 
       when: acao == 'deploy' 
       
-- name: Submit dos jobs em Spark com gravação no S3/Iceberg
-  hosts: emr_s3_client
+- name: Submit do job Spark Crypto com gravação no S3/Iceberg
+  hosts: emr_s3_client_crypto
   become: true 
   gather_facts: false
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
   roles:
-    - role: spark-submit-s3 
+    - role: spark-submit-s3-crypto
       when: acao == 'deploy' 
 
-- name: Submit dos jobs em Spark com gravação no Elastic
+- name: Submit do job Spark Trader com gravação no S3/Iceberg
+  hosts: emr_s3_client_trader
+  become: true 
+  gather_facts: false
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  roles:
+    - role: spark-submit-s3-trader
+      when: acao == 'deploy' 
+
+- name: Submit do job Spark Crypto com gravação no Elastic
   hosts: emr_els_client
   become: true 
   gather_facts: false

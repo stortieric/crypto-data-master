@@ -109,7 +109,7 @@ A execução desse projeto prevê os seguintes pré-requisitos:
   - *Adicionando a chave na sua conta*[https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account?tool=webui]
 
 - Para deixar mais organizado, na sua home crie a pasta **projetos**. Mas claro que você pode seguir como quiser as etapas seguintes até o **passo 11**.
-- No **VSCode* abra esta pasta, após isso, abra um terminal.
+- No **VSCode** abra esta pasta, após isso, abra um terminal.
 - Faça um clone do projeto:
   - *git clone git@github.com:stortieric/crypto-data-master.git*
   - *cd crypto-data-master/*

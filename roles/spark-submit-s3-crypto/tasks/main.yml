@@ -1,15 +1,13 @@
 - name: Copia o script de execução para o nó master
   ansible.builtin.copy:
-    src: "{{ playbook_dir }}/roles/spark-submit-s3/files/run_spark_s3.sh"
+    src: "{{ playbook_dir }}/roles/spark-submit-s3-crypto/files/run_spark_s3.sh"
     dest: /tmp/
     mode: '0755'
 
 - name: Define caminhos e nomes de arquivos
   set_fact:
     crypto_jar: "{{ playbook_dir }}/programs/KafkaConsumerCryptoS3-1.0.jar"
-    trader_jar: "{{ playbook_dir }}/programs/KafkaConsumerTraderS3-1.0.jar"
     crypto_class: "KafkaConsumerCryptoS3"
-    trader_class: "KafkaConsumerTraderS3"
 
 - name: Copia o JAR do Crypto para o nó master
   ansible.builtin.copy:
@@ -17,13 +15,6 @@
     dest: /tmp/KafkaConsumerCryptoS3-1.0.jar
   register: copy_crypto_result
   failed_when: copy_crypto_result is failed
-
-- name: Copia o JAR do Trader para o nó master
-  ansible.builtin.copy:
-    src: "{{ trader_jar }}"
-    dest: /tmp/KafkaConsumerTraderS3-1.0.jar
-  register: copy_trader_result
-  failed_when: copy_trader_result is failed
 
 - name: Executa o spark-submit do streaming do Crypto
   ansible.builtin.command: /tmp/run_spark_s3.sh "{{ kafka_bootstrap_server }}" "/tmp/KafkaConsumerCryptoS3-1.0.jar" "{{ crypto_class }}" "/home/hadoop/spark_streaming_crypto.log"
@@ -36,19 +27,5 @@
   failed_when: crypto_job_result is failed
 
 - name: Aguardar 60 segundos após o lançamento do job Crypto
-  ansible.builtin.pause:
-    seconds: 60
-
-- name: Executa o spark-submit do streaming do Trader
-  ansible.builtin.command: /tmp/run_spark_s3.sh "{{ kafka_bootstrap_server }}" "/tmp/KafkaConsumerTraderS3-1.0.jar" "{{ trader_class }}" "/home/hadoop/spark_streaming_trader.log"
-  args:
-    chdir: /home/hadoop
-  async: 3600
-  poll: 0
-  changed_when: false
-  register: trader_job_result
-  failed_when: trader_job_result is failed
-
-- name: Aguardar 60 segundos após o lançamento do job Trader
   ansible.builtin.pause:
     seconds: 60

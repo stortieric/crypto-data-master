@@ -9,7 +9,7 @@
             <strong>Crypto Data Master</strong>
         </td>
         <td style="text-align:center;">
-            <img src="https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_256/a201762f149941ef9b84e0742cd00e48.png" alt="litcoin" style="width: 50px;"/> <!-- Ajuste a largura aqui -->
+            <img src="https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_256/a201762f149941ef9b84e0742cd00e48.png" alt="litecoin" style="width: 50px;"/> <!-- Ajuste a largura aqui -->
         </td>
     </tr>
 </table>

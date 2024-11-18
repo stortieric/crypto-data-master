@@ -5,7 +5,7 @@
     mode: '0755'
     force: yes
 
-- name: Realiza Extracao do Kafka
+- name: Realiza Extração do Kafka
   ansible.builtin.unarchive:
     src: "/home/ec2-user/kafka_2.13-{{ versao_kafka }}.tgz"
     dest: /home/ec2-user/
@@ -16,7 +16,7 @@
     url: "https://github.com/aws/aws-msk-iam-auth/releases/download/v2.2.0/aws-msk-iam-auth-2.2.0-all.jar"
     dest: "/home/ec2-user/kafka_2.13-{{ versao_kafka }}/libs/"
 
-- name: Criacao do arquivo de configuracao do client Kafka
+- name: Criação do arquivo de configuração do client Kafka
   ansible.builtin.copy:
     dest: "/home/ec2-user/kafka_2.13-{{ versao_kafka }}/config/client.properties"
     content: |
@@ -25,7 +25,7 @@
       sasl.jaas.config=software.amazon.msk.auth.iam.IAMLoginModule required;
       sasl.client.callback.handler.class=software.amazon.msk.auth.iam.IAMClientCallbackHandler
 
-- name: Verifica se o topico coinbase-currencies Kafka existe
+- name: Verifica se o tópico coinbase-currencies Kafka existe
   ansible.builtin.shell: |
     /home/ec2-user/kafka_2.13-{{ versao_kafka }}/bin/kafka-topics.sh \
       --describe \
@@ -36,7 +36,7 @@
   ignore_errors: true
   failed_when: false
 
-- name: Criacao do topico Kafka coinbase-currencies
+- name: Criação do tópico Kafka coinbase-currencies
   ansible.builtin.shell: |
     /home/ec2-user/kafka_2.13-{{ versao_kafka }}/bin/kafka-topics.sh \
       --create \
@@ -49,7 +49,7 @@
   args:
     creates: "/var/log/ansible_kafka_topic_coins_created.log"
 
-- name: Verifica se o topico coinbase-trades Kafka existe
+- name: Verifica se o tópico coinbase-trades Kafka existe
   ansible.builtin.shell: |
     /home/ec2-user/kafka_2.13-{{ versao_kafka }}/bin/kafka-topics.sh \
       --describe \
@@ -60,7 +60,7 @@
   ignore_errors: true
   failed_when: false
 
-- name: Criacao do topico Kafka coinbase-trades
+- name: Criação do tópico Kafka coinbase-trades
   ansible.builtin.shell: |
     /home/ec2-user/kafka_2.13-{{ versao_kafka }}/bin/kafka-topics.sh \
       --create \
@@ -73,7 +73,7 @@
   args:
     creates: "/var/log/ansible_kafka_topic_trades_created.log"
 
-- name: Copia jar do producer Coins Kafka do local para instancia EC2
+- name: Copia jar do producer Coins Kafka do local para instância EC2
   ansible.builtin.copy:
     src: "{{ playbook_dir }}/programs/producer-crypto.jar"
     dest: /home/ec2-user/producer-crypto.jar
@@ -85,7 +85,7 @@
   poll: 0
   register: producer_coins_result
 
-- name: Copia jar do producer Trader Kafka do local para instancia EC2
+- name: Copia jar do producer Trader Kafka do local para instância EC2
   ansible.builtin.copy:
     src: "{{ playbook_dir }}/programs/producer-trader.jar"
     dest: /home/ec2-user/producer-trader.jar

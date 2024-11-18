@@ -1,5 +1,5 @@
 ---
-- name: Criacao de Recursos na AWS
+- name: Criação de Recursos na AWS
   hosts: local
   gather_facts: no
   roles:

@@ -1,5 +1,5 @@
-import boto3
 import json
+import boto3
 import time
 
 glue_client = boto3.client('glue')

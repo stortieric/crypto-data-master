@@ -16,7 +16,7 @@
     - role: kafka-producer 
       when: acao == 'deploy' 
       
-- name: Submit Jobs em Spark com gravação no S3
+- name: Submit dos jobs em Spark com gravação no S3/Iceberg
   hosts: emr_s3_client
   become: true 
   gather_facts: false
@@ -26,7 +26,7 @@
     - role: spark-submit-s3 
       when: acao == 'deploy' 
 
-- name: Submit Jobs em Spark com gravação no Elastic
+- name: Submit dos jobs em Spark com gravação no Elastic
   hosts: emr_els_client
   become: true 
   gather_facts: false

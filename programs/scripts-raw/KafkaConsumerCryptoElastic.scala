@@ -108,5 +108,7 @@ object KafkaConsumerCryptoElastic {
         .start()
         .awaitTermination()
     }
+
   }
+  
 }

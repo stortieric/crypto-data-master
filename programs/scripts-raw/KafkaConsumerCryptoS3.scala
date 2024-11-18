@@ -104,5 +104,7 @@ object KafkaConsumerCryptoS3 {
       .start()
       .awaitTermination()
     }
+
   }
+  
 }

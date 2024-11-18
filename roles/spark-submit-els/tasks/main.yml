@@ -4,7 +4,7 @@
     dest: /tmp/
     mode: '0755'
 
-- name: Copia o JAR pardo Elastic para o nó master
+- name: Copia o JAR do Elastic para o nó master
   ansible.builtin.copy:
     src: "{{ playbook_dir }}/programs/KafkaConsumerCryptoElastic-1.0.jar"
     dest: /tmp/KafkaConsumerCryptoElastic-1.0.jar

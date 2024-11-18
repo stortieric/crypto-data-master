@@ -26,8 +26,7 @@ public class KafkaProducerTrader {
 		Properties props = new Properties();
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-				"org.apache.kafka.common.serialization.StringSerializer");
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
 		props.put("security.protocol", "SASL_SSL");
 		props.put("sasl.mechanism", "AWS_MSK_IAM");
 		props.put("sasl.jaas.config", "software.amazon.msk.auth.iam.IAMLoginModule required;");
@@ -38,6 +37,7 @@ public class KafkaProducerTrader {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 		try {
+
 			while (true) {
 				
 				JSONObject json = new JSONObject();
@@ -68,12 +68,16 @@ public class KafkaProducerTrader {
 						exception.printStackTrace();
 					}
 				});
+			
 				Thread.sleep(5000);
+			
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			producer.close();
 		}
+
 	}
+	
 }

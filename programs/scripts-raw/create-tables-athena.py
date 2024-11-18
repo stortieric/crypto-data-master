@@ -3,6 +3,7 @@ import boto3
 import time
 
 def create_tables(event, context):
+
     athena_client = boto3.client('athena')
 
     queries = [
@@ -74,6 +75,7 @@ def create_tables(event, context):
     output_location = 's3://bronze-iceberg-data/output/'
 
     for query in queries:
+    
         response = athena_client.start_query_execution(
             QueryString=query,
             QueryExecutionContext={
@@ -88,12 +90,14 @@ def create_tables(event, context):
         print(f'Inicio da execucao da query: {query}, Id da Execucao: {execution_id}')
 
         while True:
+
             response = athena_client.get_query_execution(QueryExecutionId=execution_id)
             status = response['QueryExecution']['Status']['State']
             print(f"Query \"{query}\" status: {status}")
 
             if status in ['SUCCEEDED', 'FAILED', 'CANCELLED']:
                 break
+
             time.sleep(1)
 
     return {

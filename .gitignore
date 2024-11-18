@@ -6,5 +6,5 @@ roles/terraform/files/terraform.tfstate.backup
 roles/terraform/files/.terraform.tfstate.lock.info
 roles/terraform/files/tfplan
 # Ignora virtual env Python
-env-dm
+venv-dm
 .vscode

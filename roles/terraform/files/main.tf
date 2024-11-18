@@ -20,7 +20,6 @@ module "vpc" {
 
 module "s3" {
   source = "./modules/s3"
-  dir_raiz_s3 = var.dir_raiz_projeto
 }
 
 module "kafka" {
@@ -73,9 +72,7 @@ module "lambda" {
   engenheiro_servico_role_lambda = module.iam.engenheiro_servico_role
   bucket_programs_lake_lambda = module.s3.bucket_programs_lake
   coin_api_key_lambda = var.coin_api_key
-  lambda_cria_tabelas_key_lambda = module.s3.lambda_cria_tabelas_key
-  lambda_otimiza_tabelas_key_lambda = module.s3.lambda_otimiza_tabelas_key
-  lambda_atualiza_icons_key_lambda = module.s3.lambda_atualiza_icons_key
+  dir_raiz_lambda = var.dir_raiz_projeto
 }
 
 

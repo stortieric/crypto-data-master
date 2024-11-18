@@ -1,5 +1,5 @@
 ---
-- name: Executa funcao Lambda para criacao das tabelas
+- name: Executa função Lambda para criação das tabelas
   amazon.aws.lambda_execute:
     name: "executa-criacao-tabelas"
   register: lambda_result
@@ -14,7 +14,7 @@
     msg: "Função Lambda executada com sucesso: {{ lambda_result }}"
   when: not lambda_result.failed
 
-- name: Executa funcao Lambda para atualizar os icones das moedas em background
+- name: Executa função Lambda para atualizar os ícones das moedas em background
   amazon.aws.lambda_execute:
     name: "atualiza-assets-icons"
   async: 3600

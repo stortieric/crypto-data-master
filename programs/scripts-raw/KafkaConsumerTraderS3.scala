@@ -84,5 +84,7 @@ object KafkaConsumerTraderS3 {
       .start()
       .awaitTermination()
     }
+
   }
+
 }

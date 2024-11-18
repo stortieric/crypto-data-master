@@ -58,16 +58,20 @@ public class KafkaProducerCurrencies {
 							exception.printStackTrace();
 						}
 					});
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
 				Thread.sleep(5000);
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			producer.close();
 		}
+
 	}
+
 }

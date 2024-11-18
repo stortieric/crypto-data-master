@@ -1,8 +1,8 @@
-import requests
 import boto3
+import time
+import requests
 import os
 from datetime import datetime
-import time
 
 def insert_icons(event, context):
 
@@ -25,11 +25,11 @@ def insert_icons(event, context):
         }
     
     assets_data = response.json()
-
     athena_client = boto3.client('athena')
     output_location = 's3://bronze-iceberg-data/output/'
 
     for asset in assets_data:
+
         asset_id = asset.get("asset_id")
         asset_url = asset.get("url")
         load_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -50,12 +50,12 @@ def insert_icons(event, context):
         )
         
         execution_id = response['QueryExecutionId']
-        print(f'Início da execução da query de inserção: {query}, Id da Execução: {execution_id}')
+        print(f'Início da execucao da query de insercao: {query}, Id da Execucao: {execution_id}')
 
         while True:
             response = athena_client.get_query_execution(QueryExecutionId=execution_id)
             status = response['QueryExecution']['Status']['State']
-            print(f"Query de inserção \"{query}\" status: {status}")
+            print(f"Query de insercao \"{query}\" status: {status}")
 
             if status in ['SUCCEEDED', 'FAILED', 'CANCELLED']:
                 break

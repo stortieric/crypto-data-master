@@ -11,7 +11,7 @@ A execução desse projeto prevê os seguintes pré-requisitos:
 - Conta na plataforma Alpaca (gratutito)
 - Conta na plataforma CoinAPI (gratutito)
 - Sistema operacional Linux - Ubuntu/Debian
-- Ferramentas - Python, Ansible, Terraform, Git e VSCode (pode ser outra IDE de sua escolha)
+- Ferramentas - Python, Java, Ansible, Terraform, Git e VSCode (pode ser outra IDE de sua escolha)
 
 ## Passo a Passo
 
@@ -44,20 +44,51 @@ A execução desse projeto prevê os seguintes pré-requisitos:
 2. Escolha a opção **Log in** e siga as instruções para conseguir o acesso.
 3. Após conseguir acesso no menu lateral escolha a opção **API Keys** e depois em **CREATE APIKET**. Na lista selecione **Market Data API** e então em **CREATE**. Armazene o valor em um local seguro.
 
-### Passo 5: Testar a Instalação
+### Passo 5: Instalação do Java
 
-1. Navegue até o endereço [URL do Projeto Desplegado].
-2. Verifique se o aplicativo está funcionando corretamente.
-3. Consulte os logs em **Visualizar Logs** se encontrar problemas.
+1. Abra um terminal no Linux e execute o comando abaixo.
+2. ***sudo apt install openjdk-17-jre-headless**
 
-## Temas e Fontes
+## Passo 6: Instalação do Python 3
 
-- **Tema do Markdown:** Padrão escuro/claro conforme sua preferência.
-- **Fonte:** Arial, 12pt.
-- **Estilo de Cabeçalhos:** Negrito para seções principais, itálico se necessário.
+- Abra um terminal no Linux e execute o comando abaixo.
+- **sudo apt-get install python3**
 
-## Suporte
+## Passo 7: Instalação do Visual Studio
 
+- Você pode verificar as instruções atualizadas em [https://code.visualstudio.com/docs/setup/linux].
+- Abra um terminal no Linux e execute a sequência de comandos abaixo.
+  - echo "code code/add-microsoft-repo boolean true" | sudo debconf-set-selections
+  - sudo apt-get install wget gpg
+    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+    sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+    echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" |sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+    rm -f packages.microsoft.gpg
+  - sudo apt install apt-transport-https
+    sudo apt update
+    sudo apt install code
+
+## Passo 7: Instalação do Terraform
+
+- Você pode verificar as instruções atualizadas em [https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli].
+- Escolha o sistema, em nosso caso vamos com o **Linux** distribuição *Ubuntu/Debian*
+- Abra um terminal no Linux e execute a sequência de comandos abaixo.
+  - sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+  - wget -O- https://apt.releases.hashicorp.com/gpg | \
+    gpg --dearmor | \
+    sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+  - gpg --no-default-keyring \
+    --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+    --fingerprint
+  - echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+    https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+    sudo tee /etc/apt/sources.list.d/hashicorp.list
+  - sudo apt update
+  - sudo apt-get install terraform
+
+
+
+-  
 Em caso de dúvidas ou problemas, entre em contato com nosso suporte técnico em [email ou fórum de suporte].
 
 ---

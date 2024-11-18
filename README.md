@@ -1,6 +1,6 @@
 # Projeto de Dados 
 
-# ![bitcoin](https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_32/4caf2b16a0174e26a3482cea69c34cba.png) Crypto Data Master ![litecoin](https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_32/a201762f149941ef9b84e0742cd00e48.png)
+# ![bitcoin](https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_32/4caf2b16a0174e26a3482cea69c34cba.png) Crypto DM ![litecoin](https://s3.eu-central-1.amazonaws.com/bbxt-static-icons/type-id/png_32/a201762f149941ef9b84e0742cd00e48.png)
 
 **Repositório:** [https://github.com/stortieric/crypto-data-master]
 
@@ -22,16 +22,21 @@ Sem mais, vamos discutir um pouco sobre a nossa arquitetura de solução e arqui
 
 ![solucao](https://github.com/stortieric/crypto-data-master/blob/main/architecture/arquitetura-crypto-dm-solucao.png)
 
+Para possibilitarmos o acompanhamento dos dados de cripto em tempo real a solução é criamos um consumer que envia os dados para um broker, em nosso caso o MSK, que nada mais é que um serviço de Kafka gerenciado pela AWS, ele recebe os dados da API da Alpaca e dos dados simulados do trader. Como a informação de logo das moedas não atualizam com tanta frequência, optamos por utilizar uma função lambda que atualizará esses dados uma vez ao dia.
 
-[Descreva a arquitetura de alto nível do sistema, focando nos principais componentes e suas interações. Utilize um diagrama para visualizar a arquitetura.  Sugiro utilizar o **draw.io** (ferramenta online gratuita e fácil de usar) ou o **Lucidchart** (com opções gratuitas e pagas) para criar diagramas UML (Unified Modeling Language) ou diagramas de blocos.  Um diagrama de contexto também seria útil.]
+O MSK é um serviço que suporta muito bem grande volume de dados, por isso uma boa escolha. Como nosso caso tem um foco mais analítico, utilizamos o serviço do EMR (Elastic Map Reduce) para provisionar os clusters Spark. Assim consumimos os dados que estão sendo recebidos no Kafka e enviamos os dados para o S3, para armazenamento e consumo analítico via Athena, que é uma engine de processamento Serveless bem robusta. Em um destes processos enviamos os dados para o Elasticsearch, o objetivo é que possa consultar esse índice em tempo real para alimentar um dashbord no Kibana.
 
-*(Insira aqui o diagrama de solução. Salve-o como uma imagem (PNG ou SVG) e adicione-a ao repositório.  Link o diagrama aqui no README usando o Markdown: `![Diagrama de Solução](diagrama_solucao.png)`)
+Muito importante citar que utizamos o Glue como nosso catálogo de dados e como formato de tabela o Iceberg, este último é muito parecido com o formato Delta, facilitando o processo de evolução dos dados.
 
-**Arquitetura Técnica:**
+Para nossa segurança os dados na AWS são criptografados, assim garantimos mais segurança no armazenamento dos dados.
 
-[Descreva a arquitetura técnica detalhada, incluindo tecnologias utilizadas (banco de dados, linguagens de programação, frameworks, etc.), infraestrutura (cloud, on-premise), e a estrutura de desenvolvimento (ex: microsserviços, monólito). Utilize um diagrama para visualizar a arquitetura técnica.  O **draw.io** ou **Lucidchart** são ótimas opções para este diagrama também. Considere diagramas de componentes, diagramas de implantação ou diagramas de sequência, conforme aplicável.]
+Com o uso do Cloudwatch podemos monitorar os recursos criamos na AWS, além de customizar alertas e utilizar o o serviço SNS para envio de notificação.
 
-*(Insira aqui o diagrama de arquitetura técnica.  Salve-o como uma imagem (PNG ou SVG) e adicione-a ao repositório. Link o diagrama aqui no README usando o Markdown: `![Diagrama de Arquitetura Técnica](diagrama_tecnico.png)`)
+O Macie provẽ uma solução em Machine Learning que ajuda a identificar, monitorar e proteger os dados sensíveis armazenados no S3, com ele habilitado a descoberta é feita de forma automática.
+
+![solucao](https://github.com/stortieric/crypto-data-master/blob/main/architecture/arquitetura-crypto-dm-solucao.png)
+
+!(tecnico)[https://github.com/stortieric/crypto-data-master/blob/main/architecture/arquitetura-crypto-dm-tecnico.png]
 
 
 ## III. Explicação sobre o Case Desenvolvido

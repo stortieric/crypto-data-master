@@ -42,7 +42,7 @@ A execução desse projeto prevê os seguintes pré-requisitos:
 
 1. Visite [https://www.coinapi.io/].
 2. Escolha a opção **Log in** e siga as instruções para conseguir o acesso.
-3. Após conseguir acesso no menu lateral, escolha a opção **API Keys** e depois em **CREATE APIKET**. Na lista, selecione **Market Data API** e então em **CREATE**. Armazene o valor em um local seguro.
+3. Após conseguir acesso no menu lateral, escolha a opção **API Keys** e depois em **CREATE APIKEY**. Na lista, selecione **Market Data API** e então em **CREATE**. Armazene o valor em um local seguro.
 
 ### Passo 5: Instalação do Java
 

@@ -9,7 +9,7 @@ resource "aws_sns_topic" "alarme_topico" {
 resource "aws_sns_topic_subscription" "email_alarme_subscription" {
     topic_arn = aws_sns_topic.alarme_topico.arn
     protocol = "email"
-    endpoint = "seuemail@outlook.com" # Substitua pelo seu e-mail
+    endpoint = "ericstorti@outlook.com" # Substitua pelo seu e-mail
 }
 
 output "alarme_topico_arn" {

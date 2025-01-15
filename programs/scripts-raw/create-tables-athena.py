@@ -66,9 +66,18 @@ def create_tables(event, context):
             ON  t.asset_id = q.asset_id
                 AND t.asset_type = q.asset_type
                 AND t.transaction_timestamp BETWEEN q.start_window AND q.end_window
-        INNER JOIN crypto_db.crypto_assets a
+        INNER JOIN (
+                SELECT 
+                    asset_id,
+                    asset_type,
+                    url,
+                    load_date,
+                    ROW_NUMBER() OVER (PARTITION BY asset_id ORDER BY load_date DESC) AS rn
+                FROM 
+                    crypto_db.crypto_assets
+            ) a 
             ON  q.asset_id = a.asset_id
-                AND CAST(a.load_date AS DATE) >= (SELECT MAX(CAST(load_date AS DATE)) FROM crypto_db.crypto_assets);
+                AND a.rn = 1;
         """
     ]
     

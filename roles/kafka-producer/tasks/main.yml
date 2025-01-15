@@ -92,7 +92,7 @@
 
 - name: Executa producer Kafka Trader em background
   ansible.builtin.command: >
-    java -jar /home/ec2-user/ProducerTrader-1.0 {{kafka_bootstrap_server}}
+    java -jar /home/ec2-user/ProducerTrader-1.0.jar {{kafka_bootstrap_server}}
   async: 3600
   poll: 0 
   register: producer_trader_result

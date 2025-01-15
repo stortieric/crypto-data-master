@@ -101,7 +101,7 @@ resource "aws_emr_cluster" "emr_cluster_s3_crypto" {
   }
   core_instance_group {
     instance_type  = "m5.xlarge"
-    instance_count = 2
+    instance_count = 1
     ebs_config {
       size = "100"
       type = "gp2"
@@ -148,7 +148,7 @@ resource "aws_emr_cluster" "emr_cluster_s3_trader" {
   }
   core_instance_group {
     instance_type  = "m5.xlarge"
-    instance_count = 2
+    instance_count = 1 
     ebs_config {
       size = "100"
       type = "gp2"
@@ -195,7 +195,7 @@ resource "aws_emr_cluster" "emr_cluster_els" {
   }
   core_instance_group {
     instance_type  = "m5.xlarge"
-    instance_count = 2
+    instance_count = 1
     ebs_config {
       size = "100"
       type = "gp2"

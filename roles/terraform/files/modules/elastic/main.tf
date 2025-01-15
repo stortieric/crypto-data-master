@@ -18,7 +18,7 @@ variable "dir_raiz_els" {
 }
 
 data "aws_secretsmanager_secret" "key_elastic_cloud" {
-  name = "api_key_elastic_cloud_dm"
+  name = "api_key_elastic_dm"
 }
 
 data "aws_secretsmanager_secret_version" "key_elastic_cloud_version" {
@@ -26,14 +26,21 @@ data "aws_secretsmanager_secret_version" "key_elastic_cloud_version" {
 }
 
 provider "ec" {
-  apikey = jsondecode(data.aws_secretsmanager_secret_version.key_elastic_cloud_version.secret_string)["api-key-elastic-cloud-dm"]
+  apikey = jsondecode(data.aws_secretsmanager_secret_version.key_elastic_cloud_version.secret_string)["api-key-elastic-dm"]
 }
 
-resource "ec_deployment" "crypto_dash" {  
+data "ec_stack" "latest" {
+  version_regex = "latest"
+  region = "us-east-1"
+}
+
+resource "ec_deployment" "crypto_dash" {
+
   name = "crypto-lake-elastic"
   region = "us-east-1"
-  version = "8.15.3"
+  version = data.ec_stack.latest.version
   deployment_template_id = "aws-storage-optimized"
+  
   elasticsearch {
     topology {
       id = "hot_content"
@@ -42,6 +49,7 @@ resource "ec_deployment" "crypto_dash" {
     }
     autoscale = false
   }
+  
   kibana {
     topology {
       size = "1g"

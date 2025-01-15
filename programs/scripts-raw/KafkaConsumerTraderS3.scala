@@ -18,10 +18,10 @@ object KafkaConsumerTraderS3 {
     val spark = { 
       SparkSession.builder()
         .appName("Kafka Consumer Crypto S3")
-        .config("spark.sql.catalog.glue_catalog", "org.apache.iceberg.spark.SparkCatalog")
-        .config("spark.sql.catalog.glue_catalog.warehouse", "s3://bronze-iceberg-data/tables")
-        .config("spark.sql.catalog.glue_catalog.catalog-impl", "org.apache.iceberg.aws.glue.GlueCatalog")
-        .config("spark.sql.catalog.glue_catalog.io-impl", "org.apache.iceberg.aws.s3.S3FileIO")
+        .config("spark.sql.catalog.glue_catalog_trader", "org.apache.iceberg.spark.SparkCatalog")
+        .config("spark.sql.catalog.glue_catalog_trader.warehouse", "s3://bronze-iceberg-data/tables")
+        .config("spark.sql.catalog.glue_catalog_trader.catalog-impl", "org.apache.iceberg.aws.glue.GlueCatalog")
+        .config("spark.sql.catalog.glue_catalog_trader.io-impl", "org.apache.iceberg.aws.s3.S3FileIO")
         .getOrCreate()
     }
 
@@ -78,7 +78,7 @@ object KafkaConsumerTraderS3 {
       .writeStream
       .outputMode("append")
       .format("iceberg")
-      .option("path", "glue_catalog.crypto_db.crypto_trader")
+      .option("path", "glue_catalog_trader.crypto_db.crypto_trader")
       .option("checkpointLocation", "s3://bronze-iceberg-data/tables/checkpoint/crypto_trader")
       .trigger(Trigger.ProcessingTime("10 seconds"))
       .start()

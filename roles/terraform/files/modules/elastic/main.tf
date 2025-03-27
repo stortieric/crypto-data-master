@@ -18,7 +18,7 @@ variable "dir_raiz_els" {
 }
 
 data "aws_secretsmanager_secret" "key_elastic_cloud" {
-  name = "api_key_elastic_dm"
+  name = "api_key_elastic_cloud"
 }
 
 data "aws_secretsmanager_secret_version" "key_elastic_cloud_version" {
@@ -26,7 +26,7 @@ data "aws_secretsmanager_secret_version" "key_elastic_cloud_version" {
 }
 
 provider "ec" {
-  apikey = jsondecode(data.aws_secretsmanager_secret_version.key_elastic_cloud_version.secret_string)["api-key-elastic-dm"]
+  apikey = jsondecode(data.aws_secretsmanager_secret_version.key_elastic_cloud_version.secret_string)["api-key-elastic-cloud-dm"]
 }
 
 data "ec_stack" "latest" {
